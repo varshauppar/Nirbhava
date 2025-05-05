@@ -2,8 +2,11 @@ import { Text, SafeAreaView, Image, View, StyleSheet, TextInput, TouchableOpacit
 import logo from "../Assets/Logo/Logo.png"
 import { colorList } from "../Utils/ColorList";
 import InputBox from "../components/InputBox";
-import { useEffect,useState } from "react";
+import { useContext, useEffect,useState } from "react";
 import Icon from "react-native-vector-icons/Fontisto"
+import { AppContext } from "../Utils/AppContext";
+import { createUserWithEmailAndPassword } from "@react-native-firebase/auth";
+import { auth } from "../Firebase";
 
 export default function SignUp(props) {
     const [userName, setuserName] = useState("")
@@ -15,7 +18,7 @@ export default function SignUp(props) {
    
     const [phone, setphone] = useState("")
     const [phoneErr, setphoneErr] = useState("")
-
+    const { user, setUser } = useContext(AppContext);
 
 
     let alphbatehandler=(elementvalue)=>{
@@ -90,6 +93,8 @@ export default function SignUp(props) {
             pwd:password,
             
         }
+        setUser(userDetails)
+
         console.log(userDetails)
 
         let response = await fetch('http://10.0.2.2:5000/signup', {
@@ -102,6 +107,20 @@ export default function SignUp(props) {
         alert(result.message)
     }
 
+
+    const onClickNext =async()=>{
+
+      
+        let userDetails = {
+            name: userName,
+            mail:email,
+            mno:phone,
+            pwd:password,
+            
+        }
+        setUser(userDetails)
+        props.navigation.replace("EmergencyContactDetails")
+    }
     
 
 
@@ -137,7 +156,7 @@ export default function SignUp(props) {
             </View>
 
             <View style={{ alignItems: "center", flex: 1 }}>
-                <TouchableOpacity style={styles.subBtn} activeOpacity={0.7} onPress={()=>props.navigation.replace("EmergencyContactDetails")}>
+                <TouchableOpacity style={styles.subBtn} activeOpacity={0.7} onPress={()=>onClickNext()}>
                     <Text style={styles.subTxt}>Next</Text>
                     <Icon name={'arrow-right-l'} size={20} color="white" />
 

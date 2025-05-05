@@ -1,11 +1,16 @@
 import { View, Text, SafeAreaView, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { colorList } from '../Utils/ColorList'
 import logo from "../Assets/Logo/Logo.png"
 import InputBox from '../components/InputBox'
 import Icon from "react-native-vector-icons/Feather"
 import MatIcon from "react-native-vector-icons/MaterialCommunityIcons"
+import { AppContext } from '../Utils/AppContext'
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../Firebase'
+import { doc, setDoc } from 'firebase/firestore'
 export default function EmergencyContactDetails(props) {
+    const { user, setUser } = useContext(AppContext);
     const contactObj = {
         name:"",
         phone:""
@@ -47,6 +52,35 @@ export default function EmergencyContactDetails(props) {
         setContactLis(list)
 
     }
+
+    const onSignUp = async () => {
+        try {
+          const data = { ...user };
+          data.emergencyContacts = contactList;
+      
+          const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            data.mail,
+            data.pwd
+          );
+      
+          const client = userCredential.user;
+          console.log("User created:", client.uid);
+      
+          // ✅ Save additional user data to Firestore
+          await setDoc(doc(db, "Users", client.uid), {
+            name: data.name,
+            email: data.mail,
+            phone: data.mno,
+            emergencyContacts: data.emergencyContacts,
+            createdAt: new Date()
+          });
+      
+          console.log("User data saved to Firestore!");
+        } catch (error) {
+          console.error("Signup error:", error.message);
+        }
+      };
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colorList.appBgColor }}>
             <View style={{ flex: 1, margin: 15,flexDirection:"column",alignItems:"center" }}>
@@ -85,7 +119,7 @@ export default function EmergencyContactDetails(props) {
 
                 </TouchableOpacity>
                 </ScrollView>
-                <TouchableOpacity style={styles.subBtn} activeOpacity={0.7} onPress={()=>props.navigation.replace("QuestionPage")}>
+                <TouchableOpacity style={styles.subBtn} activeOpacity={0.7} onPress={()=>onSignUp()}>
                     <Text style={styles.subTxt}>Next</Text>
                     <Icon name={'arrow-right'} size={20} color="white" />
 

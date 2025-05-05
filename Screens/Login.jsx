@@ -3,35 +3,52 @@ import logo from "../Assets/Logo/Logo.png"
 import { colorList } from "../Utils/ColorList";
 import InputBox from "../components/InputBox";
 import { useState } from "react";
-//import firestore from '@react-native-firebase/firestore';
-//import { signInWithEmailAndPassword } from "firebase/auth";
-//import { doc, setDoc } from "firebase/firestore";
-//import { auth, db } from "../firebaseconfig"; // adjust path
+import { auth, db } from '../Firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 export default function Login(props) {
 
  const [email, setEmail] = useState("")
   const [emailErr, setEmailErr] = useState("")
   const [password, setPassword] = useState("")
   const [passwordErr, setPasswordErr] = useState("")
-  
+
+//   const addUser = async () => {
+//     try {
+//       await addDoc(collection(db, 'Users'), {
+//         name: 'John Doe',
+//         email: 'john@example.com',
+//         createdAt: serverTimestamp(),
+//       });
+//       Alert.alert("User created successfully");
+//     } catch (err) {
+//     //   console.log("Create err", err);
+//     }
+//   };
 
   const addUser = async () => {
-
-    try{
-        await firestore().collection('Users').add({
-            name: 'John Doe',
-            email: 'john@example.com',
-            createdAt: firestore.FieldValue.serverTimestamp(),
-          });
-      
-    }catch(err){
-console.log("Create err",err)
+    try {
+      await addDoc(collection(db, 'Users'), {
+        name: "test",
+        mail: "test@gmail.com",
+        mno: "9164734516",
+        pwd: "123456", // ⚠️ Ideally, don't store plain passwords
+        emergencyContacts: [
+          {
+            name: "Mom",
+            phone: "9574835674"
+          }
+        ],
+        createdAt: serverTimestamp(),
+      });
+      Alert.alert("User created successfully");
+    } catch (err) {
+      console.error("Create User Error: ", err);
+      Alert.alert("Failed to create user", err.message || 'An unknown error occurred');
     }
-   
-    Alert.alert("User created successfully")
   };
 
-  const onSubmit = () => {
+  const onSubmit = async() => {
     // You can add validation here if needed
     if (!email) {
       setEmailErr("Email is required");
@@ -46,11 +63,24 @@ console.log("Create err",err)
     // Clear any previous errors
     setEmailErr("");
     setPasswordErr("");
-  
+    await loginUser(email,password)
     // Navigate to the next screen
-    props.navigation.navigate("Home"); // Replace "Home" with your actual screen name
+    // Replace "Home" with your actual screen name
   };
   
+
+  const loginUser = async (email, password) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log("User logged in:", user.uid);
+      props.navigation.navigate("Danger");
+      Alert.alert("Login successful!");
+    } catch (error) {
+      console.error("Login error:", error);
+      Alert.alert("Login failed", error.message);
+    }
+  };
 
 
 
@@ -91,7 +121,7 @@ const loginHandler = async () => {
             </View>
 
             <View style={{ alignItems: "center", flex:4 }}>
-                <TouchableOpacity style={styles.subBtn} activeOpacity={0.7} onPress={()=>addUser()}>
+                <TouchableOpacity style={styles.subBtn} activeOpacity={0.7} onPress={()=>onSubmit()}>
                     <Text style={styles.subTxt}>LOGIN</Text>
                 </TouchableOpacity>
                 <View style={{flexDirection:'row'}}>

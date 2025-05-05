@@ -1,14 +1,106 @@
 import React, { useState } from "react";
-import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity, PermissionsAndroid, Platform, Alert, Linking  } from "react-native";
 import { colorList } from "../Utils/ColorList";
 import logo from "../Assets/Logo/Logo.png"
 import InputBox from "../components/InputBox";
 import Icon from "react-native-vector-icons/AntDesign"
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Entypo from 'react-native-vector-icons/Entypo';
-
-
+import Geolocation from '@react-native-community/geolocation';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from "../Firebase";
 export default function Danger(props) {
+
+  const getCurrentLocation = () => {
+    return new Promise((resolve, reject) => {
+      Geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          resolve({ latitude, longitude });
+        },
+        (error) => reject(error),
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      );
+    });
+  };
+
+  const fetchEmergencyContacts = async (uid) => {
+    const userRef = doc(db, 'Users', uid);
+    const userSnap = await getDoc(userRef);
+    console.log("fetchEmergencyContacts",userSnap.exists())
+    if (userSnap.exists()) {
+     
+      return userSnap.data().emergencyContacts || [];
+    }
+    return [];
+  };
+
+
+  const getUserData = async (uid) => {
+    const userRef = doc(db, "Users", uid);
+    const userSnap = await getDoc(userRef);
+  
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      console.log("User Data:", userData);
+      return userData.emergencyContacts;
+    } else {
+      console.log("No such user document!");
+      return [];
+    }
+  };
+
+
+const sendSMS = (phone, message) => {
+  const url = `sms:${phone}?body=${encodeURIComponent(message)}`;
+  Linking.openURL(url).catch(() => {
+    Alert.alert("Failed to open SMS app");
+  });
+};
+  const requestLocationPermission = async () => {
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Location Permission',
+          message: 'This app needs access to your location for emergencies.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    }
+    return true; // iOS auto handles it if added to plist
+  };
+
+  const sendEmergencyMessage = async () => {
+
+    const permission = await requestLocationPermission();
+    if (!permission) {
+      Alert.alert('Permission Denied', 'Location permission is required.');
+      return;
+    }
+    try {
+      const location = await getCurrentLocation();
+      const uid = auth.currentUser.uid;
+      const contacts = await getUserData(uid);
+  console.log("contacts",contacts)
+      const locationLink = `https://maps.google.com/?q=${location.latitude},${location.longitude}`;
+      const message = `🚨 Emergency Alert!\nYour friend might be in danger.\nLocation: ${locationLink}`;
+  
+      contacts.forEach(contact => {
+        console.log(`Would send to ${contact.name} (${contact.phone}):\n${message}`);
+        sendSMS(contact.phone,message)
+        // Later: send this message to backend API to trigger SMS/WhatsApp
+      });
+  
+      Alert.alert("Emergency message simulated. Check logs.");
+    } catch (error) {
+      console.error("Emergency error:", error);
+      Alert.alert("Failed to send emergency message", error.message);
+    }
+  };
  
    // const [email, setEmail] = useState("")
     return (
@@ -48,7 +140,7 @@ export default function Danger(props) {
   </TouchableOpacity>
 
   {/* Yes Button */}
-  <TouchableOpacity style={[styles.roundButton, { backgroundColor: '#51cf66' }]} onPress={() => console.log("Yes tapped")}>
+  <TouchableOpacity style={[styles.roundButton, { backgroundColor: '#51cf66' }]} onPress={() => sendEmergencyMessage("Yes tapped")}>
     <Text style={styles.buttonText}>Yes</Text>
   </TouchableOpacity>
 </View>
