@@ -76,6 +76,7 @@ export default function EmergencyContactDetails(props) {
             createdAt: new Date()
           });
       
+          props.navigation.replace("Login")
           console.log("User data saved to Firestore!");
         } catch (error) {
           console.error("Signup error:", error.message);
