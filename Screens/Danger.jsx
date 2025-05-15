@@ -3,12 +3,14 @@ import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity, Permissi
 import { colorList } from "../Utils/ColorList";
 import logo from "../Assets/Logo/Logo.png"
 import InputBox from "../components/InputBox";
-import Icon from "react-native-vector-icons/AntDesign"
+//import Icon from "react-native-vector-icons/AntDesign"
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Entypo from 'react-native-vector-icons/Entypo';
 import Geolocation from '@react-native-community/geolocation';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from "../Firebase";
+import Icon from 'react-native-vector-icons/FontAwesome';
+//import Icon from 'react-native-vector-icons/FontAwesome';
 export default function Danger(props) {
 
   const getCurrentLocation = () => {
@@ -50,9 +52,11 @@ export default function Danger(props) {
     }
   };
 
+  
 
 const sendSMS = (phone, message) => {
-  const url = `sms:${phone}?body=${encodeURIComponent(message)}`;
+  //const phones = phone.join(',');
+ const url = `sms:${phone}?body=${encodeURIComponent(message)}`;
   Linking.openURL(url).catch(() => {
     Alert.alert("Failed to open SMS app");
   });
@@ -74,7 +78,8 @@ const sendSMS = (phone, message) => {
     return true; // iOS auto handles it if added to plist
   };
 
-  const sendEmergencyMessage = async () => {
+ 
+ const sendEmergencyMessage = async () => {
 
     const permission = await requestLocationPermission();
     if (!permission) {
@@ -86,15 +91,18 @@ const sendSMS = (phone, message) => {
       const uid = auth.currentUser.uid;
       const contacts = await getUserData(uid);
   console.log("contacts",contacts)
+      //const phoneNumbers = contacts.map(c => c.phone); // ["9876543210", "9988776655"]
+
       const locationLink = `https://maps.google.com/?q=${location.latitude},${location.longitude}`;
-      const message = `🚨 Emergency Alert!\nYour friend might be in danger.\nLocation: ${locationLink}`;
+      const message = `Emergency Alert!\nYour friend might be in danger.\nLocation: ${locationLink}`;
   
       contacts.forEach(contact => {
         console.log(`Would send to ${contact.name} (${contact.phone}):\n${message}`);
-        sendSMS(contact.phone,message)
-        // Later: send this message to backend API to trigger SMS/WhatsApp
+       sendSMS(contact.phone,message)
+         Later: "send this message to backend API to trigger SMS/WhatsApp"
       });
   
+   // sendSMS(phoneNumbers, message);
       Alert.alert("Emergency message simulated. Check logs.");
     } catch (error) {
       console.error("Emergency error:", error);
@@ -124,8 +132,8 @@ const sendSMS = (phone, message) => {
                 
 
             </View>
-            <Text style={{ color: "#ffffff", textAlign: "center", marginTop: 100, fontSize: 30, fontWeight: "600", }}>
-                     ARE YOU  <Text style={{ color: '#cc6ea1' }}>             OK</Text> ?
+            <Text style={{ color: "#ffffff", textAlign: "center", marginTop: 240, fontSize: 40, fontWeight: "600", }}>
+                     ARE YOU <Text style={{ color: '#cc6ea1' }}>OK</Text> ?
             </Text>
            
 
@@ -135,17 +143,24 @@ const sendSMS = (phone, message) => {
 
             <View style={styles.buttonRow}>
   {/* No Button */}
-  <TouchableOpacity style={[styles.roundButton, { backgroundColor: '#ff6b6b' }]} onPress={() => console.log("No tapped")}>
+  {/* <TouchableOpacity style={[styles.roundButton, { backgroundColor: '#ff6b6b' }]} onPress={() => console.log("No tapped")}>
     <Text style={styles.buttonText}>No</Text>
+    // <Icon name="exclamation-circle" size={50} color="#fff" />
   </TouchableOpacity>
 
   {/* Yes Button */}
-  <TouchableOpacity style={[styles.roundButton, { backgroundColor: '#51cf66' }]} onPress={() => sendEmergencyMessage("Yes tapped")}>
+  {/* <TouchableOpacity style={[styles.roundButton, { backgroundColor: '#51cf66' }]} onPress={() => sendEmergencyMessage("Yes tapped")}>
     <Text style={styles.buttonText}>Yes</Text>
   </TouchableOpacity>
-</View>
-
-
+</View> */ }
+<TouchableOpacity style={[styles.roundButton, { backgroundColor: '#ff6b6b' }]} onPress={() => console.log("No tapped")}>
+  {/* <TouchableOpacity style={styles.sosButton} onPress={handleSOSPress}> */}
+          <Icon name="exclamation-circle" size={50} color="#fff" />
+          <Text style={styles.buttonText}>No</Text>
+        </TouchableOpacity></View>
+ <Text style={{ color: "#ffffff", textAlign: "center", marginTop: 10, fontSize: 20, fontWeight: "600", }}>
+                     emergency button ! <Text style={{ color: '#cc6ea1' }}></Text> 
+            </Text>
 
 
            {/* <View style={{ alignItems: "center", flex: 1 }}>
@@ -154,12 +169,11 @@ const sendSMS = (phone, message) => {
                   
                 </TouchableOpacity>*/}
 
-
-               
+ 
+  
 
 
   
-
   
                
 
@@ -174,7 +188,7 @@ const sendSMS = (phone, message) => {
   {/* Question Icon */}
   <TouchableOpacity onPress={() => console.log("Question tapped")}>
     <View style={styles.iconWithText2}>
-      <Icon name="questioncircleo" size={30} color="#fff"  style={styles.logoIcon1}  />
+      <Icon name="questioncircleo" size={40} color="#fff"  style={styles.logoIcon1}  />
       <Text style={styles.iconText1}>Question</Text>
     </View>
   </TouchableOpacity>
@@ -182,8 +196,8 @@ const sendSMS = (phone, message) => {
   {/* Gamepad Icon */}
   <TouchableOpacity onPress={() => console.log("Game tapped")}>
     <View style={styles.iconWithText2}>
-      <Entypo name="game-controller" size={30} color="#fff" style={styles.logoIcon1}/>
-      <Text style={styles.iconText1}>Game</Text>
+      <Icon name="microphone" size={40} color="#fff" style={styles.logoIcon1}/>
+      <Text style={styles.iconText1} onPress={() => props.navigation.push('Audio')}>Audio</Text>
     </View>
   </TouchableOpacity>
 
@@ -191,7 +205,7 @@ const sendSMS = (phone, message) => {
   <TouchableOpacity onPress={() => console.log("Support tapped")}>
     <View style={styles.iconWithText2}>
      
-<Entypo name="direction" size={30} color="#fff" style={styles.logoIcon1}/>
+<Entypo name="direction" size={40} color="#fff" style={styles.logoIcon1}/>
       <Text style={styles.iconText1}>location</Text>
     </View>
   </TouchableOpacity>
@@ -280,7 +294,7 @@ const styles = StyleSheet.create({
       iconWithText2: {
         alignItems: 'center',
         marginLeft: -30,
-        marginTop: 220,
+        marginTop: 180,
 
       },
       
@@ -290,14 +304,14 @@ const styles = StyleSheet.create({
       
       },
       logoIcon1: {
-        marginLeft: 60,
+        marginLeft: 80,
         
      
       },
       iconText1: {
         color: '#fff',
         fontSize: 12,
-        marginLeft: 60,
+        marginLeft: 80,
        
       },
       logoLine1: {
@@ -319,8 +333,8 @@ const styles = StyleSheet.create({
       },
       
       roundButton: {
-        width: 80,
-        height: 80,
+        width: 100,
+        height: 100,
         borderRadius: 40,
         justifyContent: 'center',
         alignItems: 'center',
@@ -329,11 +343,21 @@ const styles = StyleSheet.create({
       
       buttonText: {
         color: '#fff',
-        fontSize: 18,
+        fontSize: 28,
         fontWeight: 'bold',
       },
       
       
+        sosButton: {
+    backgroundColor: '#f44336',
+    padding: 20,
+    borderRadius: 80,
+    alignItems: 'center',
+    width: '45%', // Adjust button width for 2x2 grid
+  },
       
+
+
+
       
 });

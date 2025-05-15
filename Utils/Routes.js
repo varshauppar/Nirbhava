@@ -8,6 +8,14 @@ import Danger from "../Screens/Danger"
 import BarSetting from "../Screens/BarSetting"
 import Account from "../Screens/Account"
 import Playlist from "../Screens/Playlist"
+import PrivacyPolicy from "../Screens/PrivacyPolicy"
+import Help from "../Screens/Help"
+import ForgotPassword from "../Screens/ForgotPassword"
+import VerifyOtp from "../Screens/VerifyOtp"
+import AudioRecorder from "../Screens/AudioRecorder"
+import EditProfile from "../Screens/EditProfile"
+import Audio from "../Screens/Audio"
+//import MapScreen from "../Screens/MapScreen"
 export const route = [
   {
     name: 'Splash',
@@ -79,4 +87,53 @@ export const route = [
       headerShown: false,
     },
   },
+  {
+    name: 'PrivacyPolicy',
+    component: PrivacyPolicy,
+    option: {
+      headerShown: false,
+    },
+  },
+  {
+    name: 'Help',
+    component: Help,
+    option: {
+      headerShown: false,
+    },
+  },
+   {
+    name: 'ForgotPassword',
+    component: ForgotPassword,
+    option: {
+      headerShown: false,
+    },
+  },
+   {
+    name: 'VerifyOtp',
+    component: VerifyOtp,
+    option: {
+      headerShown: false,
+    },
+  },
+    {
+    name: 'AudioRecorder',
+    component: AudioRecorder,
+    option: {
+      headerShown: false,
+    },
+  },
+    {
+    name: 'Audio',
+    component:Audio,
+    option: {
+      headerShown: false,
+    },
+  },{
+   name: 'EditProfile',
+    component:EditProfile,
+    option: {
+      headerShown: false,
+    },
+  },
+  
 ]

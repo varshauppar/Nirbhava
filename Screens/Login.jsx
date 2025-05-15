@@ -126,7 +126,7 @@ const loginHandler = async () => {
                 </TouchableOpacity>
                 <View style={{flexDirection:'row'}}>
                     <Text style={{ color: "white", marginTop: 10, fontWeight:"bold", fontSize:13 }}>Forgot Password? </Text>
-                    <Text style={{ color: "#37c59c", marginTop: 10, fontWeight:"bold", fontSize:13 }}> Click Here</Text>
+                    <Text style={{ color: "#37c59c", marginTop: 10, fontWeight:"bold", fontSize:13 }} onPress={() => props.navigation.push("ForgotPassword")}> Click Here</Text>
                 </View>
             </View>
 
