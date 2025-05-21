@@ -146,14 +146,14 @@ export default function SignUp(props) {
                 <InputBox text={phone} isError={false} errMsg={phoneErr} type="phone" value={phone} id="number" onChangeText={(txt) => setphone(txt)} />
                 <InputBox text={password} isError={false} errMsg={passwordErr} type="password"  id=" textpassword"value={password} onChangeText={(txt) => setPassword(txt)} />
             </View>
-            <View style={{ alignItems: "center", flex: 1 ,margin:70}}>
+            {/* <View style={{ alignItems: "center", flex: 1 ,margin:70}}>
                 <TouchableOpacity style={styles.subBtn} activeOpacity={0.7} >
                     <Text style={styles.subTxt}>Signup</Text>
                     <Icon name={'arrow-right-l'} size={20} color="white" />
 
                 </TouchableOpacity>
 
-            </View>
+            </View> */}
 
             <View style={{ alignItems: "center", flex: 1 }}>
                 <TouchableOpacity style={styles.subBtn} activeOpacity={0.7} onPress={()=>onClickNext()}>

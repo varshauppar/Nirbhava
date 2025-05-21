@@ -135,17 +135,24 @@ const sendSMS = (phone, message) => {
 
             <View style={styles.buttonRow}>
   {/* No Button */}
-  <TouchableOpacity style={[styles.roundButton, { backgroundColor: '#ff6b6b' }]} onPress={() => console.log("No tapped")}>
+   <TouchableOpacity style={[styles.roundButton, { backgroundColor: '#ff6b6b' }]} onPress={() => console.log("No tapped")}>
     <Text style={styles.buttonText}>No</Text>
-  </TouchableOpacity>
+     {/* <Icon name="exclamation-circle" size={40} color="#fff" /> */}
+  </TouchableOpacity> 
 
-  {/* Yes Button */}
-  <TouchableOpacity style={[styles.roundButton, { backgroundColor: '#51cf66' }]} onPress={() => sendEmergencyMessage("Yes tapped")}>
+   {/* Yes Button */}
+   <TouchableOpacity style={[styles.roundButton, { backgroundColor: '#51cf66' }]} onPress={() => sendEmergencyMessage("Yes tapped")}>
     <Text style={styles.buttonText}>Yes</Text>
   </TouchableOpacity>
-</View>
-
-
+</View>  
+ {/* <TouchableOpacity style={[styles.roundButton, { backgroundColor: '#ff6b6b' }]} onPress={() => console.log("No tapped")}> */}
+  {/* <TouchableOpacity style={styles.sosButton} onPress={handleSOSPress}> */}
+          {/* <Icon name="exclamation-circle" size={50} color="#fff" />
+          <Text style={styles.buttonText}>No</Text>
+        </TouchableOpacity></View>
+ <Text style={{ color: "#ffffff", textAlign: "center", marginTop: 10, fontSize: 20, fontWeight: "600", }}>
+                     emergency button ! <Text style={{ color: '#cc6ea1' }}></Text> 
+            </Text> */} 
 
 
            {/* <View style={{ alignItems: "center", flex: 1 }}>
@@ -174,21 +181,22 @@ const sendSMS = (phone, message) => {
   {/* Question Icon */}
   <TouchableOpacity onPress={() => console.log("Question tapped")}>
     <View style={styles.iconWithText2}>
-      <Icon name="questioncircleo" size={30} color="#fff"  style={styles.logoIcon1}  />
+      <Icon name="addusergroup" size={40} color="#fff"  style={styles.logoIcon1}  />
       <Text style={styles.iconText1}>Question</Text>
     </View>
   </TouchableOpacity>
 
   {/* Gamepad Icon */}
-  <TouchableOpacity onPress={() => console.log("Game tapped")}>
+   <TouchableOpacity onPress={() =>  props.navigation.push("Audio") }>
+  {/* console.log("Audio tapped")}> */}
     <View style={styles.iconWithText2}>
-      <Entypo name="game-controller" size={30} color="#fff" style={styles.logoIcon1}/>
-      <Text style={styles.iconText1}>Game</Text>
+      <Icon name="microphone" size={40} color="#fff" style={styles.logoIcon1}/>
+      <Text style={styles.iconText1} onPress={() => props.navigation.replace("Audio")}>Audio</Text>
     </View>
   </TouchableOpacity>
 
   {/* Support Icon */}
-  <TouchableOpacity onPress={() => console.log("Support tapped")}>
+  <TouchableOpacity onPress={() => console.log("location tapped")}>
     <View style={styles.iconWithText2}>
      
 <Entypo name="direction" size={30} color="#fff" style={styles.logoIcon1}/>
