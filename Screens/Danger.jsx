@@ -40,7 +40,6 @@ export default function Danger(props) {
   const getUserData = async (uid) => {
     const userRef = doc(db, "Users", uid);
     const userSnap = await getDoc(userRef);
-
     if (userSnap.exists()) {
       const userData = userSnap.data();
       console.log("User Data:", userData);

@@ -6,10 +6,39 @@ import InputBox from "../components/InputBox";
 import Icon from "react-native-vector-icons/AntDesign"
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Entypo from 'react-native-vector-icons/Entypo';
-
-
+import { signOut } from "firebase/auth";
+import Share from 'react-native-share';
+//import Icon from 'react-native-vector-icons/FontAwesome';
 export default function BarSetting(props) {
  
+  const handleLogout = async () => {
+  try {
+    await signOut(auth);
+    props.navigation.replace("Login"); // Navigate to login screen after logout
+  } catch (error) {
+    console.error("Logout Error:", error);
+    Alert.alert("Logout Failed", error.message);
+  }
+};
+
+
+const handleInviteFriends = async () => {
+  const shareOptions = {
+    title: 'Invite Friends',
+    message: 'Hey! Check out this safety app I found. It helps during emergencies: https://yourapp.link',
+    // url: 'https://yourapp.link', // Optional: use this if you want to share a download link
+  };
+
+  try {
+    const result = await Share.open(shareOptions);
+    console.log('Share Result:', result);
+  } catch (error) {
+    if (error.message !== 'User did not share') {
+      console.error('Sharing error:', error);
+    }
+  }
+};
+
    // const [email, setEmail] = useState("")
     return (
         <SafeAreaView style={styles.bgWrapper}>
@@ -22,7 +51,7 @@ export default function BarSetting(props) {
            
 <Image source={logo} style={styles.appLogoImage} resizeMode="contain"></Image>
 <TouchableOpacity onPress={() => console.log("Menu opened!")}>
-  <Icon name="close" size={34} color="#fff" style={styles.logoIcon} />
+  <Icon name="close" size={34} color="#fff" style={styles.logoIcon} onPress={() => props.navigation.replace("Danger")}/>
 </TouchableOpacity>
 </View>
   <View style={styles.logoLine} />
@@ -32,7 +61,7 @@ export default function BarSetting(props) {
               </View>
  
 
-            <Text style={{ color: "#ffffff", textAlign: "center", marginTop: 10, fontSize: 20, fontWeight: "600", }}>
+            <Text style={{ color: "#ffffff", textAlign: "center", marginTop: 20, fontSize: 20, fontWeight: "600", }}>
           SETTINGS               <Text style={{ color: '#cc6ea1' }}>        </Text> 
             </Text>
                 
@@ -48,35 +77,62 @@ export default function BarSetting(props) {
             <View style={styles.logoLine1} />
   
                   
+  <TouchableOpacity onPress={() => props.navigation.push("PrivacyPolicy")}>
   
+
               
             <Text style={{ color: "#ffffff", textAlign: "center", marginTop: 40, fontSize: 20, fontWeight: "600", }}>
             <Icon name="lock" size={20} color="#fff" style={styles.logoIcon} />  <Text style={{ color: '#cc6ea1' }}> Privacy                       </Text> 
-            </Text>
+            </Text></TouchableOpacity>
             <View style={styles.logoLine1} />
   
                   
   
-              
+              <TouchableOpacity onPress={() => props.navigation.navigate('Help')}>
             <Text style={{ color: "#ffffff", textAlign: "center", marginTop: 40, fontSize: 20, fontWeight: "600", }}>
                      <Icon name="questioncircleo" size={20} color="#fff"  style={styles.logoIcon1}  />  <Text style={{ color: '#cc6ea1' }}> Help                           </Text> 
-            </Text>
+            </Text></TouchableOpacity>
             <View style={styles.logoLine1} />
   
             
-  
-              
-            <Text style={{ color: "#ffffff", textAlign: "center", marginTop: 40, fontSize: 20, fontWeight: "600", }}>   
+  <TouchableOpacity onPress={handleInviteFriends}>
+     <Text style={{ color: "#ffffff", textAlign: "center", marginTop: 40, fontSize: 20, fontWeight: "600", }}>   
                             <Icon name="addusergroup" size={20} color="#fff"  style={styles.logoIcon1} />   <Text style={{ color: '#cc6ea1' }}>
-                                       Invite a friend           </Text> 
+                                       Invite a friend              </Text> 
             </Text>
+ 
+</TouchableOpacity>
+ <View style={styles.logoLine1} />
+  
+            
+  <TouchableOpacity onPress={() => props.navigation.push("Audio")}>
+     <Text style={{ color: "#ffffff", textAlign: "center", marginTop: 40, fontSize: 20, fontWeight: "600", }}>   
+                            <Icon name="microphone" size={20} color="#fff"  style={styles.logoIcon1} />   <Text style={{ color: '#cc6ea1' }}>
+                                       Recorder                     </Text> 
+            </Text>
+ 
+</TouchableOpacity>
+
+           
+           
+
+           
+
+
             <View style={styles.logoLine1} />
   
                   
-  
+   <TouchableOpacity onPress={handleLogout} >
+
+<Text style={{ color: "#ffffff", textAlign: "center", marginTop: 40, fontSize: 20, fontWeight: "600", }}>   
+                        <Icon name="logout" size={20} color="#fff"  style={styles.logoIcon1} />     <Text style={{ color: '#cc6ea1' }} onPress={() => props.navigation.replace("Login")}>Logout          </Text>             </Text>
+
               
            
-            
+           
+ 
+</TouchableOpacity>
+
 
           
 
