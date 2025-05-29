@@ -8,6 +8,7 @@ import Danger from "../Screens/Danger"
 import BarSetting from "../Screens/BarSetting"
 import Account from "../Screens/Account"
 import Playlist from "../Screens/Playlist"
+import AudioRecorder from "../Screens/AudioRecorder"
 export const route = [
   {
     name: 'Splash',
@@ -75,6 +76,13 @@ export const route = [
   {
     name: 'Playlist',
     component: Playlist,
+    option: {
+      headerShown: false,
+    },
+  },
+  {
+    name: 'AudioRecord',
+    component: AudioRecorder,
     option: {
       headerShown: false,
     },
